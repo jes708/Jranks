@@ -20,16 +20,9 @@ app.config(function ($stateProvider) {
 
 app.controller('CartController', function ($scope, Session, theSession, InventoryFactory, cartItems, CartFactory, $state) {
 
+  $state.go($state.current, {}, {reload: true})
 
-  // CartFactory.fetchAllInCart()
-  // .then(function(cart){
-    $scope.cartItems = cartItems;
-  // })
-
-  // $scope.updateCart = function(){
-  //   $scope.$apply()
-  //   $state.go('cart');
-  // }
+  $scope.cartItems = cartItems;
 
   $scope.grandTotal = cartItems.reduce(function(sum, item){
     return sum + (item.price * item.qty);
@@ -39,9 +32,7 @@ app.controller('CartController', function ($scope, Session, theSession, Inventor
 
 });
 
-app.factory('CartFactory', function ($http) {
-
-  // var CachedCart = [];
+app.factory('CartFactory', function ($http, $state) {
 
   var CartFactory = {};
 
@@ -55,18 +46,13 @@ app.factory('CartFactory', function ($http) {
   CartFactory.fetchAllInCart = function() {
     return $http.get('/api/cart/myCart')
     .then(function(response) {
-      // console.log("Did we make fetch")
-      // angular.copy("hey", CachedCart);
-      // console.log("weird stuff ", CachedCart);
       return response.data
-      // return CachedCart;
     })
   }
 
   CartFactory.addToCart = function(inventoryId) {
     return $http.post('/api/cart/add', {id: inventoryId})
     .then(function(cart){
-      // CachedCart.push(cart.data);
       return cart;
     })
   }
